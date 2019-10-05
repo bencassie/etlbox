@@ -48,6 +48,9 @@ namespace ALE.ETLBox.Helper
         public static ConnectionDetails<PostgresConnectionString, PostgresConnectionManager> PostgresConnection
         { get; set; } = new ConnectionDetails<PostgresConnectionString, PostgresConnectionManager>("PostgresConnectionString");
 
+        public static ConnectionDetails<OracleConnectionString, OracleConnectionManager> OracleConnection
+        { get; set; } = new ConnectionDetails<OracleConnectionString, OracleConnectionManager>("OracleConnectionString");
+
         public static ConnectionDetails<OdbcConnectionString, AccessOdbcConnectionManager> AccessOdbcConnection
         { get; set; } = new ConnectionDetails<OdbcConnectionString, AccessOdbcConnectionManager>("AccessOdbcConnectionString");
 
@@ -56,6 +59,7 @@ namespace ALE.ETLBox.Helper
 
         public static IEnumerable<object[]> AllSqlConnections(string section) => new[] {
                     new object[] { (IConnectionManager)SqlConnection.ConnectionManager(section) },
+                    new object[] { (IConnectionManager)OracleConnection.ConnectionManager(section) },
                     new object[] { (IConnectionManager)PostgresConnection.ConnectionManager(section) },
                     new object[] { (IConnectionManager)MySqlConnection.ConnectionManager(section) },
                     new object[] { (IConnectionManager)SQLiteConnection.ConnectionManager(section) },
@@ -63,12 +67,14 @@ namespace ALE.ETLBox.Helper
 
         public static IEnumerable<object[]> AllConnectionsWithoutSQLite(string section) => new[] {
                     new object[] { (IConnectionManager)SqlConnection.ConnectionManager(section) },
+                     new object[] { (IConnectionManager)OracleConnection.ConnectionManager(section) },
                     new object[] { (IConnectionManager)PostgresConnection.ConnectionManager(section) },
                     new object[] { (IConnectionManager)MySqlConnection.ConnectionManager(section) },
         };
 
         public static IEnumerable<object[]> AllSqlConnectionsWithValue(string section, string value) => new[] {
                     new object[] { (IConnectionManager)SqlConnection.ConnectionManager(section) , value},
+                    new object[] { (IConnectionManager)OracleConnection.ConnectionManager(section), value },
                     new object[] { (IConnectionManager)PostgresConnection.ConnectionManager(section), value },
                     new object[] { (IConnectionManager)MySqlConnection.ConnectionManager(section) , value},
                     new object[] { (IConnectionManager)SQLiteConnection.ConnectionManager(section) , value},
@@ -76,6 +82,7 @@ namespace ALE.ETLBox.Helper
 
         public static IEnumerable<object[]> AllSqlConnectionsWithValue(string section, int value) => new[] {
                     new object[] { (IConnectionManager)SqlConnection.ConnectionManager(section) , value},
+                    new object[] { (IConnectionManager)OracleConnection.ConnectionManager(section), value },
                     new object[] { (IConnectionManager)PostgresConnection.ConnectionManager(section), value },
                     new object[] { (IConnectionManager)MySqlConnection.ConnectionManager(section) , value},
                     new object[] { (IConnectionManager)SQLiteConnection.ConnectionManager(section) , value}

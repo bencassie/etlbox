@@ -15,6 +15,7 @@ namespace ALE.ETLBoxTests.ControlFlowTests
         public SqlConnectionManager SqlMasterConnection => new SqlConnectionManager(Config.SqlConnectionString("ControlFlow").GetMasterConnection());
         public static IEnumerable<object[]> SqlConnectionsWithMaster() => new[] {
                     new object[] { (IConnectionManager)new SqlConnectionManager(Config.SqlConnection.ConnectionString("ControlFlow").GetMasterConnection()) },
+                    new object[] { (IConnectionManager)new OracleConnectionManager(Config.OracleConnection.ConnectionString("ControlFlow").GetMasterConnection()) },
                     new object[] { (IConnectionManager)new PostgresConnectionManager(Config.PostgresConnection.ConnectionString("ControlFlow").GetMasterConnection()) },
                     new object[] { (IConnectionManager)new MySqlConnectionManager(Config.MySqlConnection.ConnectionString("ControlFlow").GetMasterConnection()) },
         };
