@@ -15,7 +15,7 @@ namespace ALE.ETLBox.DataFlow
     /// JsonSource&lt;POCO&gt; source = new JsonSource&lt;POCO&gt;("Demo.json");
     /// </code>
     /// </example>
-    public class JsonSource<TOutput> : DataFlowSource<TOutput>, ITask, IDataFlowSource<TOutput>
+    public class JsonSource<TOutput> : DataFlowSource<TOutput>, ITask
     {
         /* ITask Interface */
         public override string TaskName => $"Dataflow: Read Json source data from file {FileName}";

@@ -16,7 +16,7 @@ namespace ALE.ETLBox.DataFlow
     /// multicast.LinkTo(dest2);
     /// </code>
     /// </example>
-    public class Multicast<TInput> : DataFlowTask, ITask, IDataFlowTransformation<TInput, TInput>
+    public class Multicast<TInput> : DataFlowTask, ITask, IDataFlowTransformation<TInput, TInput>, IDataFlowLink<TInput>
     {
         /* ITask Interface */
         public override string TaskName { get; set; } = "Dataflow: Multicast";
@@ -39,18 +39,30 @@ namespace ALE.ETLBox.DataFlow
             this.TaskName = name;
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TInput> target)
+        IDataFlowLinkSource<TInput> IDataFlowLinkSource<TInput>.LinkTo(IDataFlowLinkTarget<TInput> target)
+        {
+            return LinkTo<TInput>(target);
+        }
+
+        IDataFlowLinkSource<TInput> IDataFlowLinkSource<TInput>.LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        {
+            return LinkTo<TInput>(target, predicate);
+        }
+
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
         {
             BroadcastBlock.LinkTo(target.TargetBlock, new DataflowLinkOptions() { PropagateCompletion = true });
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            return target as IDataFlowLinkSource<TOut>;
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
         {
             BroadcastBlock.LinkTo(target.TargetBlock, new DataflowLinkOptions() { PropagateCompletion = true }, predicate);
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            return target as IDataFlowLinkSource<TOut>;
         }
 
         private TInput Clone(TInput row)

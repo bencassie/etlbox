@@ -20,7 +20,7 @@ namespace ALE.ETLBox.DataFlow
     /// block.LinkTo(dest);
     /// </code>
     /// </example>
-    public class BlockTransformation<TInput, TOutput> : DataFlowTask, ITask, IDataFlowLinkTarget<TInput>, IDataFlowLinkSource<TOutput>
+    public class BlockTransformation<TInput, TOutput> : DataFlowTask, ITask, IDataFlowLinkTarget<TInput>, IDataFlowLinkSource<TOutput>, IDataFlowLink<TOutput>
     {
         /* ITask Interface */
         public override string TaskName { get; set; } = "Dataflow: Block Transformation";
@@ -94,20 +94,31 @@ namespace ALE.ETLBox.DataFlow
             NLogFinish();
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TOutput> target)
+        public IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target)
+        {
+            return this.LinkTo<TOutput>(target);
+        }
+
+        public IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
+        {
+            return this.LinkTo<TOutput>(target, predicate);
+        }
+
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target)
         {
             OutputBuffer.LinkTo(target.TargetBlock, new DataflowLinkOptions() { PropagateCompletion = true });
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            return target as IDataFlowLinkSource<TOut>;
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
         {
             OutputBuffer.LinkTo(target.TargetBlock, new DataflowLinkOptions() { PropagateCompletion = true }, predicate);
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            return target as IDataFlowLinkSource<TOut>;
         }
-
 
         void NLogStart()
         {
@@ -129,6 +140,7 @@ namespace ALE.ETLBox.DataFlow
             if (!DisableLogging && HasLoggingThresholdRows && (ProgressCount % LoggingThresholdRows == 0))
                 NLogger.Info(TaskName + $" processed {ProgressCount} records.", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
         }
+
 
     }
 

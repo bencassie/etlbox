@@ -19,7 +19,7 @@ namespace ALE.ETLBox.DataFlow
     /// </code>
     /// </example>
     public class Lookup<TTransformationInput, TTransformationOutput, TSourceOutput>
-        : DataFlowTask, ITask, IDataFlowTransformation<TTransformationInput, TTransformationOutput>
+        : DataFlowTask, ITask, IDataFlowTransformation<TTransformationInput, TTransformationOutput>, IDataFlowLink<TTransformationOutput>
     {
 
         /* ITask Interface */
@@ -94,15 +94,28 @@ namespace ALE.ETLBox.DataFlow
             LookupList.Add(sourceRow);
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TTransformationOutput> target)
+        public IDataFlowLinkSource<TTransformationOutput> LinkTo(IDataFlowLinkTarget<TTransformationOutput> target)
         {
-            RowTransformation.LinkTo(target);
+            return LinkTo<TTransformationOutput>(target);
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
+        public IDataFlowLinkSource<TTransformationOutput> LinkTo(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
         {
-            RowTransformation.LinkTo(target, predicate);
+            return LinkTo<TTransformationOutput>(target, predicate);
         }
+
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target)
+        {
+            RowTransformation.LinkTo<TTransformationOutput>(target);
+            return target as IDataFlowLinkSource<TOut>;
+        }
+
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
+        {
+            RowTransformation.LinkTo<TTransformationOutput>(target, predicate);
+            return target as IDataFlowLinkSource<TOut>;
+        }
+
     }
 
     /// <summary>

@@ -54,7 +54,7 @@ namespace ALE.ETLBoxTests.DataFlowTests
                 });
             source1.LinkTo(join.Target1);
             source2.LinkTo(join.Target2);
-            join.LinkTo(dest);
+            join.LinkTo<MySimpleRow>(dest);
             source1.Execute();
             source2.Execute();
             dest.Wait();

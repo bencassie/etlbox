@@ -23,7 +23,7 @@ namespace ALE.ETLBox.DataFlow
     /// source.Execute(); //Start the data flow
     /// </code>
     /// </example>
-    public class DBSource<TOutput> : DataFlowSource<TOutput>, ITask, IDataFlowSource<TOutput>
+    public class DBSource<TOutput> : DataFlowSource<TOutput>, ITask
     {
         /* ITask Interface */
         public override string TaskName => $"Dataflow: Read DB data from {SourceDescription}";

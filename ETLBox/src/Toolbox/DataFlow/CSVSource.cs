@@ -19,7 +19,7 @@ namespace ALE.ETLBox.DataFlow
     /// source.Configuration.Delimiter = ";";
     /// </code>
     /// </example>
-    public class CSVSource<TOutput> : DataFlowSource<TOutput>, ITask, IDataFlowSource<TOutput>
+    public class CSVSource<TOutput> : DataFlowSource<TOutput>, ITask
     {
         /* ITask Interface */
         public override string TaskName => $"Dataflow: Read CSV Source data from file {FileName}";

@@ -4,7 +4,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace ALE.ETLBox.DataFlow
 {
-    public abstract class DataFlowSource<TOutput> : DataFlowTask, ITask
+    public abstract class DataFlowSource<TOutput> : DataFlowTask, ITask, IDataFlowSource<TOutput>, IDataFlowLink<TOutput>
     {
         public ISourceBlock<TOutput> SourceBlock => this.Buffer;
         internal BufferBlock<TOutput> Buffer { get; set; } = new BufferBlock<TOutput>();
@@ -24,18 +24,30 @@ namespace ALE.ETLBox.DataFlow
             await task;
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TOutput> target)
+        public IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target)
+        {
+            return this.LinkTo<TOutput>(target);
+        }
+
+        public IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
+        {
+            return this.LinkTo<TOutput>(target, predicate);
+        }
+
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target)
         {
             Buffer.LinkTo(target.TargetBlock, new DataflowLinkOptions() { PropagateCompletion = true });
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            return target as IDataFlowLinkSource<TOut>;
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
         {
             Buffer.LinkTo(target.TargetBlock, new DataflowLinkOptions() { PropagateCompletion = true }, predicate);
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            return target as IDataFlowLinkSource<TOut>;
         }
 
         internal void NLogStart()
