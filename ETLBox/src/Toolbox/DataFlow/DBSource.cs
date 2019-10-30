@@ -23,7 +23,7 @@ namespace ALE.ETLBox.DataFlow
     /// source.Execute(); //Start the data flow
     /// </code>
     /// </example>
-    public class DBSource<TOutput> : DataFlowSource<TOutput>, ITask, IDataFlowSource<TOutput>
+    public class DBSource<TOutput> : DataFlowSource<TOutput>, ITask, IDataFlowSource<TOutput>, IDataFlowTask<TOutput>
     {
         /* ITask Interface */
         public override string TaskName => $"Dataflow: Read DB data from {SourceDescription}";
@@ -127,6 +127,18 @@ namespace ALE.ETLBox.DataFlow
                 SourceTableDefinition = TableDefinition.GetDefinitionFromTableName(TableName, this.ConnectionManager);
             else if (!HasSourceTableDefinition && !HasTableName)
                 throw new ETLBoxException("No Table definition or table name found! You must provide a table name or a table definition.");
+        }
+
+        public IDataFlowTask<TOutput> Link(IDataFlowLinkTarget<TOutput> target)
+        {
+            this.LinkTo(target);
+            return target as IDataFlowTask<TOutput>;
+        }
+
+        public IDataFlowTask<TOutput> Link(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
+        {
+            this.LinkTo(target, predicate);
+            return target as IDataFlowTask<TOutput>;
         }
     }
 

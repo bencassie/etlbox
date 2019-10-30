@@ -4,7 +4,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace ALE.ETLBox.DataFlow
 {
-    public abstract class DataFlowSource<TOutput> : DataFlowTask, ITask
+    public abstract class DataFlowSource<TOutput> : DataFlowTask, ITask, IDataFlowTask<TOutput>
     {
         public ISourceBlock<TOutput> SourceBlock => this.Buffer;
         internal BufferBlock<TOutput> Buffer { get; set; } = new BufferBlock<TOutput>();
@@ -57,6 +57,31 @@ namespace ALE.ETLBox.DataFlow
             ProgressCount += rowsProcessed;
             if (!DisableLogging && HasLoggingThresholdRows && (ProgressCount % LoggingThresholdRows == 0))
                 NLogger.Info(TaskName + $" processed {ProgressCount} records.", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+        }
+
+        IDataFlowTask<TOutput> IDataFlowTask<TOutput>.Link(IDataFlowLinkTarget<TOutput> target)
+        {
+            this.LinkTo(target);
+            return target as IDataFlowTask<TOutput>;
+        }
+
+        IDataFlowTask<TOutput> IDataFlowTask<TOutput>.Link(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
+        {
+
+            this.LinkTo(target, predicate);
+            return target as IDataFlowTask<TOutput>;
+        }
+
+        public IDataFlowDestination<TOutput> Link(IDataFlowDestination<TOutput> target)
+        {
+            this.LinkTo(target);
+            return target as IDataFlowDestination<TOutput>;
+        }
+
+        public IDataFlowDestination<TOutput> Link(IDataFlowDestination<TOutput> target, Predicate<TOutput> predicate)
+        {
+            this.LinkTo(target, predicate);
+            return target as IDataFlowDestination<TOutput>;
         }
     }
 }

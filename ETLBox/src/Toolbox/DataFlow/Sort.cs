@@ -17,7 +17,7 @@ namespace ALE.ETLBox.DataFlow
     /// Sort&lt;MyDataRow&gt; block = new Sort&lt;MyDataRow&gt;(comp);
     /// </code>
     /// </example>
-    public class Sort<TInput> : DataFlowTask, ITask, IDataFlowLinkTarget<TInput>, IDataFlowLinkSource<TInput>
+    public class Sort<TInput> : DataFlowTask, ITask, IDataFlowLinkTarget<TInput>, IDataFlowLinkSource<TInput>, IDataFlowTask<TInput>
     {
 
 
@@ -71,6 +71,18 @@ namespace ALE.ETLBox.DataFlow
         public void LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
         {
             BlockTransformation.LinkTo(target, predicate);
+        }
+
+        IDataFlowTask<TInput> IDataFlowTask<TInput>.Link(IDataFlowLinkTarget<TInput> target)
+        {
+            this.LinkTo(target);
+            return target as IDataFlowTask<TInput>;
+        }
+
+        IDataFlowTask<TInput> IDataFlowTask<TInput>.Link(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        {
+            this.LinkTo(target, predicate);
+            return target as IDataFlowTask<TInput>;
         }
     }
 
