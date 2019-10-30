@@ -8,7 +8,7 @@ namespace ALE.ETLBox.DataFlow
     /// Define your own source block.
     /// </summary>
     /// <typeparam name="TOutput">Type of data output.</typeparam>
-    public class CustomSource<TOutput> : DataFlowSource<TOutput>, ITask, IDataFlowSource<TOutput>
+    public class CustomSource<TOutput> : DataFlowSource<TOutput>, ITask
     {
         /* ITask Interface */
         public override string TaskName => $"Dataflow: Custom source";

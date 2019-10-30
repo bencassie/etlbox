@@ -20,7 +20,7 @@ namespace ALE.ETLBox.DataFlow
     ///  };
     /// </code>
     /// </example>
-    public class ExcelSource<TOutput> : DataFlowSource<TOutput>, ITask, IDataFlowSource<TOutput> where TOutput : new()
+    public class ExcelSource<TOutput> : DataFlowSource<TOutput>, ITask where TOutput : new()
     {
         /* ITask Interface */
         public override string TaskName => $"Dataflow: Read Excel source data from file {FileName}";
