@@ -181,19 +181,19 @@ namespace ALE.ETLBox.DataFlow
 
         public void Wait() => DestinationTable.Wait();
         public async Task Completion() => await DestinationTable.Completion();
-        public IDataFlowLink<TInput> LinkTo(IDataFlowLinkTarget<TInput> target) => LinkTo<TInput>(target);
-        public IDataFlowLink<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate) => LinkTo<TInput>(target, predicate);
+        public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target) => LinkTo<TInput>(target);
+        public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate) => LinkTo<TInput>(target, predicate);
 
-        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
         {
             OutputSource.LinkTo<TOut>(target);
-            return target as IDataFlowLink<TOut>;
+            return target as IDataFlowLinkSource<TOut>;
         }
 
-        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
         {
             OutputSource.LinkTo<TOut>(target, predicate);
-            return target as IDataFlowLink<TOut>;
+            return target as IDataFlowLinkSource<TOut>;
         }
 
         public ISourceBlock<TInput> SourceBlock => OutputSource.SourceBlock;

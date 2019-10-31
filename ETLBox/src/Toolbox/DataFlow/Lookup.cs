@@ -94,26 +94,26 @@ namespace ALE.ETLBox.DataFlow
             LookupList.Add(sourceRow);
         }
 
-        public IDataFlowLink<TTransformationOutput> LinkTo(IDataFlowLinkTarget<TTransformationOutput> target)
+        public IDataFlowLinkSource<TTransformationOutput> LinkTo(IDataFlowLinkTarget<TTransformationOutput> target)
         {
             return LinkTo<TTransformationOutput>(target);
         }
 
-        public IDataFlowLink<TTransformationOutput> LinkTo(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
+        public IDataFlowLinkSource<TTransformationOutput> LinkTo(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
         {
             return LinkTo<TTransformationOutput>(target, predicate);
         }
 
-        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target)
         {
             RowTransformation.LinkTo<TTransformationOutput>(target);
-            return target as IDataFlowLink<TOut>;
+            return target as IDataFlowLinkSource<TOut>;
         }
 
-        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
         {
             RowTransformation.LinkTo<TTransformationOutput>(target, predicate);
-            return target as IDataFlowLink<TOut>;
+            return target as IDataFlowLinkSource<TOut>;
         }
 
     }

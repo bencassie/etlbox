@@ -86,30 +86,30 @@ namespace ALE.ETLBox.DataFlow
         }
 
 
-        public IDataFlowLink<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target)
+        public IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target)
         {
             return LinkTo<TOutput>(target);
         }
 
-        public IDataFlowLink<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
+        public IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
         {
             return LinkTo<TOutput>(target, predicate);
         }
 
-        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target)
         {
             TransformBlock.LinkTo(target.TargetBlock, new DataflowLinkOptions() { PropagateCompletion = true });
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
-            return target as IDataFlowLink<TOut>;
+            return target as IDataFlowLinkSource<TOut>;
         }
 
-        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate)
         {
             TransformBlock.LinkTo(target.TargetBlock, new DataflowLinkOptions() { PropagateCompletion = true }, predicate);
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
-            return target as IDataFlowLink<TOut>;
+            return target as IDataFlowLinkSource<TOut>;
         }
 
         private TOutput InvokeRowTransformationFunc(TInput row)

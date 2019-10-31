@@ -63,30 +63,30 @@ namespace ALE.ETLBox.DataFlow
             return data;
         }
 
-        public IDataFlowLink<TInput> LinkTo(IDataFlowLinkTarget<TInput> target)
+        public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target)
         {
             return LinkTo<TInput>(target);
         }
 
-        public IDataFlowLink<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
         {
             return LinkTo<TInput>(target, predicate);
         }
 
-        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
         {
             BlockTransformation.LinkTo<TInput>(target);
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
-            return target as IDataFlowLink<TOut>;
+            return target as IDataFlowLinkSource<TOut>;
         }
 
-        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
         {
             BlockTransformation.LinkTo<TInput>(target, predicate);
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
-            return target as IDataFlowLink<TOut>;
+            return target as IDataFlowLinkSource<TOut>;
         }
     }
 
