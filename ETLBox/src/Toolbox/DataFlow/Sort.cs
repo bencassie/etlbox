@@ -17,7 +17,7 @@ namespace ALE.ETLBox.DataFlow
     /// Sort&lt;MyDataRow&gt; block = new Sort&lt;MyDataRow&gt;(comp);
     /// </code>
     /// </example>
-    public class Sort<TInput> : DataFlowTask, ITask, IDataFlowLinkTarget<TInput>, IDataFlowLinkSource<TInput>
+    public class Sort<TInput> : DataFlowTask, ITask, IDataFlowLinkTarget<TInput>, IDataFlowLinkSource<TInput>, IDataFlowLink<TInput>
     {
 
 
@@ -63,14 +63,30 @@ namespace ALE.ETLBox.DataFlow
             return data;
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TInput> target)
+        public IDataFlowLink<TInput> LinkTo(IDataFlowLinkTarget<TInput> target)
         {
-            BlockTransformation.LinkTo(target);
+            return LinkTo<TInput>(target);
         }
 
-        public void LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        public IDataFlowLink<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
         {
-            BlockTransformation.LinkTo(target, predicate);
+            return LinkTo<TInput>(target, predicate);
+        }
+
+        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
+        {
+            BlockTransformation.LinkTo<TInput>(target);
+            if (!DisableLogging)
+                NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            return target as IDataFlowLink<TOut>;
+        }
+
+        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        {
+            BlockTransformation.LinkTo<TInput>(target, predicate);
+            if (!DisableLogging)
+                NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            return target as IDataFlowLink<TOut>;
         }
     }
 

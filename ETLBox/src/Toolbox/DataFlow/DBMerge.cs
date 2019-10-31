@@ -16,7 +16,7 @@ namespace ALE.ETLBox.DataFlow
     /// <code>
     /// </code>
     /// </example>
-    public class DBMerge<TInput> : DataFlowTask, ITask, IDataFlowLinkTarget<TInput>, IDataFlowSource<TInput> where TInput : IMergable, new()
+    public class DBMerge<TInput> : DataFlowTask, ITask, IDataFlowLink<TInput>, IDataFlowLinkTarget<TInput>, IDataFlowSource<TInput> where TInput : IMergable, new()
     {
         /* ITask Interface */
         public override string TaskName { get; set; } = "Dataflow: Insert, Upsert or delete in destination";
@@ -181,14 +181,21 @@ namespace ALE.ETLBox.DataFlow
 
         public void Wait() => DestinationTable.Wait();
         public async Task Completion() => await DestinationTable.Completion();
+        public IDataFlowLink<TInput> LinkTo(IDataFlowLinkTarget<TInput> target) => LinkTo<TInput>(target);
+        public IDataFlowLink<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate) => LinkTo<TInput>(target, predicate);
 
-        public void LinkTo(IDataFlowLinkTarget<TInput> target) => OutputSource.LinkTo(target);
+        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
+        {
+            OutputSource.LinkTo<TOut>(target);
+            return target as IDataFlowLink<TOut>;
+        }
 
-        public void LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate) => OutputSource.LinkTo(target);
+        public IDataFlowLink<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        {
+            OutputSource.LinkTo<TOut>(target, predicate);
+            return target as IDataFlowLink<TOut>;
+        }
 
         public ISourceBlock<TInput> SourceBlock => OutputSource.SourceBlock;
-
     }
-
-
 }

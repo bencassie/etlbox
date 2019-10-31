@@ -81,8 +81,8 @@ namespace ALE.ETLBoxTests.DataFlowTests
 
             //Act
             source.LinkTo(multicast);
-            multicast.LinkTo(row1);
-            multicast.LinkTo(row2);
+            multicast.LinkTo<Entity1>(row1);
+            multicast.LinkTo<Entity2>(row2);
 
             row1.LinkTo(destination1);
             row2.LinkTo(destination2);

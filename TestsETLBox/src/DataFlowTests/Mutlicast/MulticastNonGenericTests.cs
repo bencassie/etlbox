@@ -42,8 +42,8 @@ namespace ALE.ETLBoxTests.DataFlowTests
             Multicast multicast = new Multicast();
 
             source.LinkTo(multicast);
-            multicast.LinkTo(dest1);
-            multicast.LinkTo(dest2);
+            multicast.LinkTo<string[]>(dest1);
+            multicast.LinkTo<string[]>(dest2);
             source.Execute();
             dest1.Wait();
             dest2.Wait();

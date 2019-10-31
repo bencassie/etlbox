@@ -89,8 +89,8 @@ namespace ALE.ETLBoxTests.DataFlowTests
 
             source.LinkTo(rowTrans);
             rowTrans.LinkTo(multicast);
-            multicast.LinkTo(dest, input => input.IsDuplicate == false);
-            multicast.LinkTo(trash, input => input.IsDuplicate == true);
+            multicast.LinkTo<Poco>(dest, input => input.IsDuplicate == false);
+            multicast.LinkTo<Poco>(trash, input => input.IsDuplicate == true);
 
             source.Execute();
             dest.Wait();
