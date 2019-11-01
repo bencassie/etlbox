@@ -68,9 +68,9 @@ namespace ALE.ETLBox.DataFlow
             return LinkTo<TInput>(target);
         }
 
-        public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate, bool alsoNegatePredicateWithVoidDestination = false)
         {
-            return LinkTo<TInput>(target, predicate);
+            return LinkTo<TInput>(target, predicate, alsoNegatePredicateWithVoidDestination);
         }
 
         public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
@@ -81,11 +81,17 @@ namespace ALE.ETLBox.DataFlow
             return target as IDataFlowLinkSource<TOut>;
         }
 
-        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate, bool alsoNegatePredicateWithVoidDestination = false)
         {
             BlockTransformation.LinkTo<TInput>(target, predicate);
             if (!DisableLogging)
                 NLogger.Debug(TaskName + " was linked to Target!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            if (alsoNegatePredicateWithVoidDestination)
+            {
+                BlockTransformation.LinkTo<TInput>(new VoidDestination<TInput>(), x => !predicate(x));
+                if (!DisableLogging)
+                    NLogger.Debug(TaskName + " was also linked to VoidDestination with negative predicate!", TaskType, "LOG", TaskHash, ControlFlow.ControlFlow.STAGE, ControlFlow.ControlFlow.CurrentLoadProcess?.LoadProcessKey);
+            }
             return target as IDataFlowLinkSource<TOut>;
         }
     }

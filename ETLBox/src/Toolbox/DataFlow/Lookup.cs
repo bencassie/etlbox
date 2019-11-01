@@ -99,9 +99,9 @@ namespace ALE.ETLBox.DataFlow
             return LinkTo<TTransformationOutput>(target);
         }
 
-        public IDataFlowLinkSource<TTransformationOutput> LinkTo(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
+        public IDataFlowLinkSource<TTransformationOutput> LinkTo(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate, bool alsoNegatePredicateWithVoidDestination = false)
         {
-            return LinkTo<TTransformationOutput>(target, predicate);
+            return LinkTo<TTransformationOutput>(target, predicate, alsoNegatePredicateWithVoidDestination);
         }
 
         public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target)
@@ -110,12 +110,15 @@ namespace ALE.ETLBox.DataFlow
             return target as IDataFlowLinkSource<TOut>;
         }
 
-        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TTransformationOutput> target, Predicate<TTransformationOutput> predicate, bool alsoNegatePredicateWithVoidDestination = false)
         {
             RowTransformation.LinkTo<TTransformationOutput>(target, predicate);
+            if (alsoNegatePredicateWithVoidDestination)
+            {
+                RowTransformation.LinkTo<TTransformationOutput>(new VoidDestination<TTransformationOutput>(), x => !predicate(x));
+            }
             return target as IDataFlowLinkSource<TOut>;
         }
-
     }
 
     /// <summary>

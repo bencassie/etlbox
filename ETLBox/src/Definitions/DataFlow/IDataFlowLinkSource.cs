@@ -8,8 +8,8 @@ namespace ALE.ETLBox.DataFlow
         ISourceBlock<TOutput> SourceBlock { get; }
 
         IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target);
-        IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate);
+        IDataFlowLinkSource<TOutput> LinkTo(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate, bool alsoNegatePredicateWithVoidDestination = false);
         IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target);
-        IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate);
+        IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TOutput> target, Predicate<TOutput> predicate, bool alsoNegatePredicateWithVoidDestination = false);
     }
 }

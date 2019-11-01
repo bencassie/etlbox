@@ -182,7 +182,7 @@ namespace ALE.ETLBox.DataFlow
         public void Wait() => DestinationTable.Wait();
         public async Task Completion() => await DestinationTable.Completion();
         public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target) => LinkTo<TInput>(target);
-        public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate) => LinkTo<TInput>(target, predicate);
+        public IDataFlowLinkSource<TInput> LinkTo(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate, bool alsoNegatePredicateWithVoidDestination = false) => LinkTo<TInput>(target, predicate, alsoNegatePredicateWithVoidDestination);
 
         public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target)
         {
@@ -190,9 +190,13 @@ namespace ALE.ETLBox.DataFlow
             return target as IDataFlowLinkSource<TOut>;
         }
 
-        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate)
+        public IDataFlowLinkSource<TOut> LinkTo<TOut>(IDataFlowLinkTarget<TInput> target, Predicate<TInput> predicate, bool alsoNegatePredicateWithVoidDestination = false)
         {
             OutputSource.LinkTo<TOut>(target, predicate);
+            if (alsoNegatePredicateWithVoidDestination)
+            {
+                OutputSource.LinkTo<TOut>(new VoidDestination<TInput>(), x => !predicate(x));
+            }
             return target as IDataFlowLinkSource<TOut>;
         }
 
