@@ -16,7 +16,7 @@ namespace ALE.ETLBox.DataFlow
     /// multicast.LinkTo(dest2);
     /// </code>
     /// </example>
-    public class Multicast<TInput> : DataFlowTask, ITask, IDataFlowTransformation<TInput, TInput>, IDataFlowLink<TInput>
+    public class Multicast<TInput> : DataFlowTask, ITask, IDataFlowTransformation<TInput, TInput>
     {
         /* ITask Interface */
         public override string TaskName { get; set; } = "Dataflow: Multicast";

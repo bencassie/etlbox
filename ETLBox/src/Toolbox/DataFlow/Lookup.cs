@@ -19,7 +19,7 @@ namespace ALE.ETLBox.DataFlow
     /// </code>
     /// </example>
     public class Lookup<TTransformationInput, TTransformationOutput, TSourceOutput>
-        : DataFlowTask, ITask, IDataFlowTransformation<TTransformationInput, TTransformationOutput>, IDataFlowLink<TTransformationOutput>
+        : DataFlowTask, ITask, IDataFlowTransformation<TTransformationInput, TTransformationOutput>
     {
 
         /* ITask Interface */

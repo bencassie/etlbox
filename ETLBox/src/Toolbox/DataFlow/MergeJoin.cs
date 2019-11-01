@@ -19,7 +19,7 @@ namespace ALE.ETLBox.DataFlow
     /// join.LinkTo(dest);
     /// </code>
     /// </example>
-    public class MergeJoin<TInput1, TInput2, TOutput> : DataFlowTask, ITask, IDataFlowLinkSource<TOutput>, IDataFlowLink<TOutput>
+    public class MergeJoin<TInput1, TInput2, TOutput> : DataFlowTask, ITask, IDataFlowLinkSource<TOutput>
     {
         private Func<TInput1, TInput2, TOutput> _mergeJoinFunc;
 

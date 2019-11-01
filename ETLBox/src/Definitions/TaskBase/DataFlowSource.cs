@@ -4,7 +4,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace ALE.ETLBox.DataFlow
 {
-    public abstract class DataFlowSource<TOutput> : DataFlowTask, ITask, IDataFlowSource<TOutput>, IDataFlowLink<TOutput>
+    public abstract class DataFlowSource<TOutput> : DataFlowTask, ITask, IDataFlowSource<TOutput>
     {
         public ISourceBlock<TOutput> SourceBlock => this.Buffer;
         internal BufferBlock<TOutput> Buffer { get; set; } = new BufferBlock<TOutput>();

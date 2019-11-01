@@ -19,7 +19,7 @@ namespace ALE.ETLBox.DataFlow
     /// trans.LinkTo(dest);
     /// </code>
     /// </example>
-    public class RowTransformation<TInput, TOutput> : DataFlowTask, ITask, IDataFlowTransformation<TInput, TOutput>, IDataFlowLink<TOutput>
+    public class RowTransformation<TInput, TOutput> : DataFlowTask, ITask, IDataFlowTransformation<TInput, TOutput>
     {
         /* ITask Interface */
         public override string TaskName { get; set; } = "Dataflow: Row Transformation";
